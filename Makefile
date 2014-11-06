@@ -1,5 +1,4 @@
 SHELL=bash
-PHRASE_EXTRACT=$${HOME}/Projects/smt/smt/phrase/phrase_extract.py
 PYTHON=python3
 DELIMITER=","
 
@@ -15,7 +14,7 @@ bigram:
 	./train_bigram <(awk -F"," '{print $$2}' keyword.txt) >bigram.model
 
 phrase:
-	${PYTHON} ${PHRASE_EXTRACT} keyword.txt <keyword.txt | sort | uniq -c | awk '{ printf("%s\t%s\n", $$2, $$1) }' | ${PYTHON} phrasemodel.py >phrase.model
+	${PYTHON} phrase_extract.py ${DELIMITER} keyword.txt <keyword.txt | sort | uniq -c | awk '{ printf("%s\t%s\n", $$2, $$1) }' | ${PYTHON} phrasemodel.py >phrase.model
 
 clean:
 	rm keyword.txt bigram.model phrase.model train_bigram

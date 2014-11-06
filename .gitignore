@@ -1,0 +1,4 @@
+bigram.model
+keyword.txt
+phrase.model
+train_bigram

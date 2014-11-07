@@ -12,8 +12,8 @@ convformat:
 	sed -e 's/./& /g' -e 's/ $$//' -e 's/ , /,/g' <keyword.lst >keyword.txt
 
 bigram:
-	#./train_bigram <(awk -F"," '{print $$2}' keyword.txt) >bigram.model
 	./train_bigram <(ggrep -P '^.{3,}$$' halfwidthkatakana.txt | sed -e 's/./& /g' -e 's/ $$//') >bigram.model
+	#./train_bigram <(awk -F"," '{print $$2}' keyword.txt) >bigram.model
 	#./train_bigram <(sed -e 's/./& /g' -e 's/ $$//' raw.txt) >bigram.model
 
 phrase:

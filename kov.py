@@ -128,6 +128,7 @@ def _search(
 if __name__ == '__main__':
 
     import kovfig
+    import sys
 
     phrasemodel = {}
     with open(kovfig.phrase_model_file) as f:
@@ -151,7 +152,6 @@ if __name__ == '__main__':
         else:
             unimodel[words] = prob
 
-    import sys
     ifd = open(sys.argv[1]) if len(sys.argv) >= 2 else sys.stdin
     for line in (_.rstrip() for _ in ifd):
         ans = _search(list(line), unimodel, bimodel, phrasemodel)

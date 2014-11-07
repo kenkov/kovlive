@@ -144,13 +144,14 @@ if __name__ == '__main__':
     unimodel = {}
     bimodel = {}
     with open(kovfig.bigram_model_file) as f:
-        words, prob = line.rstrip().split("\t")
-        prob = float(prob)
-        if " " in words:
-            w0, w1 = words.split(" ")
-            bimodel[(w0, w1)] = prob
-        else:
-            unimodel[words] = prob
+        for line in f:
+            words, prob = line.rstrip().split("\t")
+            prob = float(prob)
+            if " " in words:
+                w0, w1 = words.split(" ")
+                bimodel[(w0, w1)] = prob
+            else:
+                unimodel[words] = prob
 
     ifd = open(sys.argv[1]) if len(sys.argv) >= 2 else sys.stdin
     for line in (_.rstrip() for _ in ifd):

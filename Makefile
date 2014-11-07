@@ -3,7 +3,7 @@ PYTHON=python3
 DELIMITER=","
 NOSETESTS=nosetests -v
 
-KEYWORD_FILE=keyword.lst
+KEYWORD_FILE=keyword.txt
 FORMATED_KEYWORD_FILE=keyword.input.txt
 HALFWIDTHKATAKANA_FILE=halfwidthkatakana.txt
 

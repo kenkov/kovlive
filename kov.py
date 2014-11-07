@@ -127,10 +127,10 @@ def _search(
 
 if __name__ == '__main__':
 
-    # load phrase model
-    #phrasemodel = {"a": {"A": 0.5}, "b": {"B": 0.3}}
+    import kovfig
+
     phrasemodel = {}
-    with open("./phrase.model") as f:
+    with open(kovfig.phrase_model_file) as f:
         for line in f:
             words, prob = line.rstrip().split("\t")
             prob = float(prob)
@@ -142,7 +142,7 @@ if __name__ == '__main__':
     # load bigrammodel
     unimodel = {}
     bimodel = {}
-    with open("./bigram.model") as f:
+    with open(kovfig.bigram_model_file) as f:
         words, prob = line.rstrip().split("\t")
         prob = float(prob)
         if " " in words:
@@ -152,6 +152,7 @@ if __name__ == '__main__':
             unimodel[words] = prob
 
     import sys
-    ipt = sys.argv[1]
-    ans = _search(list(ipt), unimodel, bimodel, phrasemodel)
-    print("{} => {}".format(ipt, ''.join(ans)))
+    ifd = sys.argv[1] if len(sys.argv) >= 2 else sys.stdin
+    for line in (_.rstrip() for _ in ifd):
+        ans = _search(list(line), unimodel, bimodel, phrasemodel)
+        print(''.join(ans))

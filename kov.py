@@ -13,7 +13,7 @@ def bigram_prob(
         bimodel: dict,
         lambda2: float=0.95,
         lambda1: float=0.95,
-        unk_n: int=1e6):
+        unk_n: int=1e10):
     if (w0, w1) in bimodel:
         prob = lambda2 * bimodel[(w0, w1)]
     elif w1 in unimodel:

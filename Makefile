@@ -10,6 +10,8 @@ HALFWIDTHKATAKANA_FILE=halfwidthkatakana.txt
 BIGRAM_MODEL=bigram.model
 PHRASE_MODEL=phrase.model
 
+.PHONY: main convformat bigram phrase clean
+
 main: train_bigram convformat bigram phrase
 
 train_bigram: train_bigram.cpp

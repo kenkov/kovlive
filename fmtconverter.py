@@ -3,9 +3,9 @@
 
 
 if __name__ == '__main__':
-    from sys import argv
-    fd = open(argv[1])
-    for line in fd:
+    from sys import argv, stdin
+    delimiter = argv[1]
+    for line in stdin:
         line = ' '.join(line.rstrip())
-        line = line.replace(" , ", ",")
+        line = line.replace(" {} ".format(delimiter), "{}".format(delimiter))
         print(line)

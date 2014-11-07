@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 bigram.model
-keyword.txt
 phrase.model
 train_bigram
+keyword.input.txt
+raw.txt

@@ -152,7 +152,7 @@ if __name__ == '__main__':
             unimodel[words] = prob
 
     import sys
-    ifd = sys.argv[1] if len(sys.argv) >= 2 else sys.stdin
+    ifd = open(sys.argv[1]) if len(sys.argv) >= 2 else sys.stdin
     for line in (_.rstrip() for _ in ifd):
         ans = _search(list(line), unimodel, bimodel, phrasemodel)
         print(''.join(ans))

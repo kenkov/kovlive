@@ -1,7 +1,7 @@
 SHELL=bash
 PYTHON=python3
 DELIMITER=","
-NOSETESTS="nosetests -v"
+NOSETESTS=nosetests -v
 
 main: train_bigram convformat bigram phrase
 

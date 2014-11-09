@@ -13,13 +13,14 @@ def bigram_prob(
         bimodel: dict,
         lambda2: float=0.95,
         lambda1: float=0.95,
-        unk_n: int=1e10):
+        unk_n: int=1e6):
     if (w0, w1) in bimodel:
         prob = lambda2 * bimodel[(w0, w1)]
     elif w1 in unimodel:
         prob = (1 - lambda2) * lambda1 * unimodel[w1]
     else:
         prob = (1 - lambda2) * (1 - lambda1) * (1 / unk_n)
+    print(w0, w1, -log(prob))
     return -log(prob)
 
 
@@ -29,9 +30,8 @@ def phrase_prob(
         phrasemodel: dict,
         lambda1: float=0.95,
         unk_n: int=1e6):
-    key = (p1, p2)
-    if key in phrasemodel:
-        prob = lambda1 * phrasemodel[key]
+    if p1 in phrasemodel and p2 in phrasemodel[p1]:
+        prob = lambda1 * phrasemodel[p1][p2]
     else:
         prob = (1 - lambda1) * (1 / unk_n)
     return -log(prob)
@@ -63,8 +63,9 @@ def _search(
 
             for (cur_phrase, (cur_start, cur_end)), prob in \
                     best[curpos].items():
-                cur_word = sent[cur_end]
+                #cur_word = sent[cur_end]
                 cur_key = (cur_phrase, (cur_start, cur_end))
+                conv_w0 = cur_phrase[-1]
 
                 # 候補にそのまま変換しないパタンがない場合
                 # このとき, next_phrase == next_word
@@ -76,9 +77,10 @@ def _search(
                     except:
                         conv_phrase = next_phrase
                         #print("error: failed to convert halfwidth katakana")
+                    conv_w1 = conv_phrase[0]
                     next_key = (conv_phrase, (next_start, next_end))
                     next_prob = prob \
-                        + bigram_prob(cur_word, next_word, unimodel, bimodel) \
+                        + bigram_prob(conv_w0, conv_w1, unimodel, bimodel) \
                         + phrase_prob(next_phrase, next_word, phrasemodel)
                     if next_key in best[next_end]:
                         if best[next_end][next_key] >= next_prob:
@@ -90,12 +92,15 @@ def _search(
                     #print("{} {}".format(cur_word, next_word))
                 if next_phrase in phrasemodel:
                     for conv_phrase in phrasemodel[next_phrase]:
+                        conv_w1 = conv_phrase[0]
                         next_key = (conv_phrase, (next_start, next_end))
+                        #print("  {} {}".format(cur_word, next_word))
                         next_prob = prob \
-                            + bigram_prob(cur_word, next_word,
+                            + bigram_prob(conv_w0, conv_w1,
                                           unimodel, bimodel) \
-                            + phrase_prob(cur_phrase, conv_phrase, phrasemodel)
-                        #print("\t{}\t{}".format(conv_phrase, next_prob))
+                            + phrase_prob(next_phrase,
+                                          conv_phrase,
+                                          phrasemodel)
                         if next_key in best[next_end]:
                             if best[next_end][next_key] >= next_prob:
                                 best[next_end][next_key] = next_prob
@@ -103,13 +108,25 @@ def _search(
                         else:
                             best[next_end][next_key] = next_prob
                             before_pos[next_end][next_key] = cur_key
+    from pprint import pprint
+    pprint(best)
+    pprint(before_pos)
+    #return best, before_pos
 
     # search best
     ans = []
     ind = sent_len - 1
     start = ind
     end = ind
-    phrase, (start, end) = before_pos[ind][(end_symbol, (start, end))]
+    min_val = float("inf")
+    min_key = ""
+    for (key, (_, _)), val in best[ind].items():
+        if min_val > val:
+            print("{} => {}: {} => {}".format(min_key, key, min_val, val))
+            min_key = key
+            min_val = val
+    ans.append(min_key)
+    phrase, (start, end) = before_pos[ind][(min_key, (start, end))]
     ans.append(phrase)
 
     while end != 0:
@@ -118,11 +135,7 @@ def _search(
 
     ans.reverse()
 
-    #from pprint import pprint
-    #pprint(best)
-    #pprint(before_pos)
-    #return best, before_pos
-    return ans[1:]
+    return ans
 
 
 if __name__ == '__main__':

@@ -45,17 +45,13 @@ def bigram_prob(
         verbose: bool=False,
         log: bool=True
 ):
-    if verbose:
-        vstr = ""
     if (w0, w1) in bimodel:
         prob = lambda2 * bimodel[(w0, w1)]
     elif w1 in unimodel:
         prob = (1 - lambda2) * lambda1 * unimodel[w1]
     else:
         prob = (1 - lambda2) * (1 - lambda1) * (1 / unk_n)
-    if verbose:
-        vstr += "BP({} | {}) = {}".format(w1, w0, round(prob, 4))
-        print(vstr)
+
     if log:
         return -math.log(prob)
     else:
@@ -71,15 +67,12 @@ def phrase_prob(
         verbose: bool=False,
         log: bool=True
 ):
-    if verbose:
-        vstr = ""
+
     if p1 in phrasemodel and p2 in phrasemodel[p1]:
         prob = lambda1 * phrasemodel[p1][p2]
     else:
         prob = (1 - lambda1) * (1 / unk_n)
-    if verbose:
-        vstr += "PP({} | {}) = {}".format(p2, p1, round(prob, 4))
-        print(vstr)
+
     if log:
         return -math.log(prob)
     else:

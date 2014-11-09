@@ -1,7 +1,7 @@
 SHELL=bash
 PYTHON=python3
 DELIMITER=","
-NOSETESTS=nosetests -v
+NOSETESTS=nosetests -v --all-modules
 
 KEYWORD_FILE=keyword.txt
 FORMATED_KEYWORD_FILE=keyword.input.txt

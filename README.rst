@@ -14,8 +14,8 @@
 
 .. code-block:: bash
 
-    $ echo 今日のお昼はステーキを食べたいっ | python3 kov.py
-    今日のお昼はｽﾃｯｷを食べたいっ
+    $ echo 今日のお昼はステーキを食べたい | python3 kov.py
+    <s>今日のお昼はｽﾃｯｷを食べたいっ</s>
 
 
 使い方

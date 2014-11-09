@@ -41,14 +41,20 @@ def bigram_prob(
         bimodel: dict,
         lambda2: float=0.95,
         lambda1: float=0.95,
-        unk_n: int=1e6):
+        unk_n: int=1e6,
+        verbose: bool=False,
+):
+    if verbose:
+        vstr = ""
     if (w0, w1) in bimodel:
         prob = lambda2 * bimodel[(w0, w1)]
     elif w1 in unimodel:
         prob = (1 - lambda2) * lambda1 * unimodel[w1]
     else:
         prob = (1 - lambda2) * (1 - lambda1) * (1 / unk_n)
-    print(w0, w1, -log(prob))
+    if verbose:
+        vstr += "BP({} | {}) = {}".format(w1, w0, round(prob, 4))
+        print(vstr)
     return -log(prob)
 
 
@@ -57,11 +63,18 @@ def phrase_prob(
         p2: str,
         phrasemodel: dict,
         lambda1: float=0.95,
-        unk_n: int=1e6):
+        unk_n: int=1e6,
+        verbose: bool=False,
+):
+    if verbose:
+        vstr = ""
     if p1 in phrasemodel and p2 in phrasemodel[p1]:
         prob = lambda1 * phrasemodel[p1][p2]
     else:
         prob = (1 - lambda1) * (1 / unk_n)
+    if verbose:
+        vstr += "PP({} | {}) = {}".format(p2, p1, round(prob, 4))
+        print(vstr)
     return -log(prob)
 
 
@@ -72,7 +85,9 @@ def _search(
         phrasemodel: dict,
         start_symbol: str="<s>",
         end_symbol: str="</s>",
-        max_len=100):
+        max_len=100,
+        verbose: bool=False,
+):
 
     sent = [start_symbol] + sent_without_symbol + [end_symbol]
     sent_len = len(sent)
@@ -108,8 +123,17 @@ def _search(
                     conv_w1 = conv_phrase[0]
                     next_key = (conv_phrase, (next_start, next_end))
                     next_prob = prob \
-                        + bigram_prob(conv_w0, conv_w1, unimodel, bimodel) \
-                        + phrase_prob(next_phrase, next_word, phrasemodel)
+                        + bigram_prob(
+                            conv_w0,
+                            conv_w1,
+                            unimodel,
+                            bimodel,
+                            verbose=verbose) \
+                        + phrase_prob(
+                            next_phrase,
+                            next_word,
+                            phrasemodel,
+                            verbose=verbose)
                     if next_key in best[next_end]:
                         if best[next_end][next_key] >= next_prob:
                             best[next_end][next_key] = next_prob
@@ -124,11 +148,17 @@ def _search(
                         next_key = (conv_phrase, (next_start, next_end))
                         #print("  {} {}".format(cur_word, next_word))
                         next_prob = prob \
-                            + bigram_prob(conv_w0, conv_w1,
-                                          unimodel, bimodel) \
-                            + phrase_prob(next_phrase,
-                                          conv_phrase,
-                                          phrasemodel)
+                            + bigram_prob(
+                                conv_w0,
+                                conv_w1,
+                                unimodel,
+                                bimodel,
+                                verbose=verbose) \
+                            + phrase_prob(
+                                next_phrase,
+                                conv_phrase,
+                                phrasemodel,
+                                verbose=verbose)
                         if next_key in best[next_end]:
                             if best[next_end][next_key] >= next_prob:
                                 best[next_end][next_key] = next_prob
@@ -136,10 +166,11 @@ def _search(
                         else:
                             best[next_end][next_key] = next_prob
                             before_pos[next_end][next_key] = cur_key
-    from pprint import pprint
-    pprint(best)
-    pprint(before_pos)
-    #return best, before_pos
+    if verbose:
+        from pprint import pprint
+        pprint(best)
+        pprint(before_pos)
+        return best, before_pos
 
     # search best
     ans = []
@@ -170,12 +201,33 @@ if __name__ == '__main__':
 
     import kovfig
     import sys
+    import argparse
 
     # load models
     phrasemodel = load_phrase_model(kovfig.phrase_model_file)
     unimodel, bimodel = load_bigram_model(kovfig.bigram_model_file)
 
-    ifd = open(sys.argv[1]) if len(sys.argv) >= 2 else sys.stdin
-    for line in (_.rstrip() for _ in ifd):
-        ans = _search(list(line), unimodel, bimodel, phrasemodel)
+    # parse arg
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "infile",
+        nargs="?",
+        type=argparse.FileType("r"),
+        default=sys.stdin,
+        help="input file: if absent, reads from stdin"
+    )
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="show probability"
+    )
+    args = parser.parse_args()
+
+    for line in (_.rstrip() for _ in args.infile):
+        ans = _search(
+            list(line),
+            unimodel,
+            bimodel,
+            phrasemodel,
+            verbose=args.verbose)
         print(''.join(ans))

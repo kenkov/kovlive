@@ -6,11 +6,15 @@
 
 .. code-block:: bash
 
-    usage: kov.py [-h] [-v] [infile]
+    $ python3 kov.py -v
+    usage: kov.py [-h] [-v] [file]
 
-    optional arguments:
-      -h, --help     show this help message and exit
-      -v, --verbose  show probability
+    positional arguments:
+      file           input file: if absent, reads from stdin
+
+      optional arguments:
+        -h, --help     show this help message and exit
+        -v, --verbose  show probability
 
 .. code-block:: bash
 

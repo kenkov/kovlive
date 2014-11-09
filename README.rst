@@ -6,16 +6,20 @@
 
 .. code-block:: bash
 
-    usage: kov.py [-h] [-v] [infile]
+    $ python3 kov.py -v
+    usage: kov.py [-h] [-v] [file]
 
-    optional arguments:
-      -h, --help     show this help message and exit
-      -v, --verbose  show probability
+    positional arguments:
+      file           input file: if absent, reads from stdin
+
+      optional arguments:
+        -h, --help     show this help message and exit
+        -v, --verbose  show probability
 
 .. code-block:: bash
 
-    $ echo 今日のお昼はステーキを食べたいっ | python3 kov.py
-    今日のお昼はｽﾃｯｷを食べたいっ
+    $ echo 今日のお昼はステーキを食べたい | python3 kov.py
+    <s>今日のお昼はｽﾃｯｷを食べたいっ</s>
 
 
 使い方

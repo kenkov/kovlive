@@ -3,6 +3,7 @@
 
 
 import math
+import sys
 from chartype import Chartype
 
 
@@ -42,7 +43,6 @@ def bigram_prob(
         lambda2: float=0.95,
         lambda1: float=0.95,
         unk_n: int=1e6,
-        verbose: bool=False,
         log: bool=True
 ):
     if (w0, w1) in bimodel:
@@ -64,7 +64,6 @@ def phrase_prob(
         phrasemodel: dict,
         lambda1: float=0.95,
         unk_n: int=1e6,
-        verbose: bool=False,
         log: bool=True
 ):
 
@@ -103,7 +102,6 @@ def _search(
         for next_end in range(next_start, min(sent_len, next_start+max_len)):
             next_phrase = ''.join(sent[next_start:next_end+1])
             next_word = sent[next_start]
-            #print(next_phrase)
 
             for (cur_phrase, (cur_start, cur_end)), prob in \
                     best[curpos].items():
@@ -120,7 +118,6 @@ def _search(
                         conv_phrase = ch.full2half(next_phrase)
                     except:
                         conv_phrase = next_phrase
-                        #print("error: failed to convert halfwidth katakana")
                     conv_w1 = conv_phrase[0]
                     next_key = (conv_phrase, (next_start, next_end))
                     next_prob = prob \
@@ -128,13 +125,11 @@ def _search(
                             conv_w0,
                             conv_w1,
                             unimodel,
-                            bimodel,
-                            verbose=verbose) \
+                            bimodel) \
                         + phrase_prob(
                             next_phrase,
                             next_word,
-                            phrasemodel,
-                            verbose=verbose)
+                            phrasemodel)
                     if next_key in best[next_end]:
                         if best[next_end][next_key] >= next_prob:
                             best[next_end][next_key] = next_prob
@@ -142,24 +137,20 @@ def _search(
                     else:
                         best[next_end][next_key] = next_prob
                         before_pos[next_end][next_key] = cur_key
-                    #print("{} {}".format(cur_word, next_word))
                 if next_phrase in phrasemodel:
                     for conv_phrase in phrasemodel[next_phrase]:
                         conv_w1 = conv_phrase[0]
                         next_key = (conv_phrase, (next_start, next_end))
-                        #print("  {} {}".format(cur_word, next_word))
                         next_prob = prob \
                             + bigram_prob(
                                 conv_w0,
                                 conv_w1,
                                 unimodel,
-                                bimodel,
-                                verbose=verbose) \
+                                bimodel) \
                             + phrase_prob(
                                 next_phrase,
                                 conv_phrase,
-                                phrasemodel,
-                                verbose=verbose)
+                                phrasemodel)
                         if next_key in best[next_end]:
                             if best[next_end][next_key] >= next_prob:
                                 best[next_end][next_key] = next_prob
@@ -169,35 +160,39 @@ def _search(
                             before_pos[next_end][next_key] = cur_key
     if verbose:
         for i in range(1, sent_len):
-            print("{}".format(sent[i]))
+            print("{}".format(sent[i]), file=sys.stderr)
             for (key, (start, end)), prob in best[i].items():
                 before = before_pos[i][(key, (start, end))]
                 b_start, b_end = before[1]
                 b_key = before[0]
-                print("\t({}, {}) {} => {}: linked -> ({}, {}) {}".format(
-                    start, end, key, round(prob, 4),
-                    b_start, b_end, b_key
-                ))
-                print("\t\t-log PP({} | {}) = {}".format(
-                    key, sent[i],
-                    round(phrase_prob(
-                        sent[i],  # phrase
-                        key,  # conv phrase
-                        phrasemodel,
-                        verbose=False,
-                        log=False), 4)
-                ))
-                print("\t\t-log BP({} | {}) = {}".format(
-                    key[0],
-                    b_key[-1],
-                    round(bigram_prob(
-                        b_key[-1],
+                print(
+                    "\t({}, {}) {} => {}: linked -> ({}, {}) {}".format(
+                        start, end, key, round(prob, 4),
+                        b_start, b_end, b_key
+                        ),
+                    file=sys.stderr)
+                print(
+                    "\t\tPP({} | {}) = {}".format(
+                        key, sent[i],
+                        round(phrase_prob(
+                            sent[i],  # phrase
+                            key,  # conv phrase
+                            phrasemodel,
+                            log=False), 4)
+                        ),
+                    file=sys.stderr)
+                print(
+                    "\t\tBP({} | {}) = {}".format(
                         key[0],
-                        unimodel,
-                        bimodel,
-                        verbose=False,
-                        log=False), 4)
-                ))
+                        b_key[-1],
+                        round(bigram_prob(
+                            b_key[-1],
+                            key[0],
+                            unimodel,
+                            bimodel,
+                            log=False), 4),
+                        ),
+                    file=sys.stderr)
 
     # search best
     ans = []
@@ -227,7 +222,6 @@ def _search(
 if __name__ == '__main__':
 
     import kovfig
-    import sys
     import argparse
 
     # load models

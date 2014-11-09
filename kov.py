@@ -6,6 +6,34 @@ from math import log
 from chartype import Chartype
 
 
+def load_phrase_model(modelfile: str) -> dict:
+    phrasemodel = {}
+    with open(modelfile) as f:
+        for line in f:
+            words, prob = line.rstrip().split("\t")
+            prob = float(prob)
+            w1, w2 = words.split(",")
+            if w1 not in phrasemodel:
+                phrasemodel[w1] = {}
+            phrasemodel[w1][w2] = prob
+    return phrasemodel
+
+
+def load_bigram_model(modelfile: str) -> (dict, dict):
+    unimodel = {}
+    bimodel = {}
+    with open(kovfig.bigram_model_file) as f:
+        for line in f:
+            words, prob = line.rstrip().split("\t")
+            prob = float(prob)
+            if " " in words:
+                w0, w1 = words.split(" ")
+                bimodel[(w0, w1)] = prob
+            else:
+                unimodel[words] = prob
+    return unimodel, bimodel
+
+
 def bigram_prob(
         w0: str,
         w1: str,
@@ -143,28 +171,10 @@ if __name__ == '__main__':
     import kovfig
     import sys
 
-    phrasemodel = {}
-    with open(kovfig.phrase_model_file) as f:
-        for line in f:
-            words, prob = line.rstrip().split("\t")
-            prob = float(prob)
-            w1, w2 = words.split(",")
-            if w1 not in phrasemodel:
-                phrasemodel[w1] = {}
-            phrasemodel[w1][w2] = prob
+    phrasemodel = load_phrase_model(kovfig.phrase_model_file)
 
     # load bigrammodel
-    unimodel = {}
-    bimodel = {}
-    with open(kovfig.bigram_model_file) as f:
-        for line in f:
-            words, prob = line.rstrip().split("\t")
-            prob = float(prob)
-            if " " in words:
-                w0, w1 = words.split(" ")
-                bimodel[(w0, w1)] = prob
-            else:
-                unimodel[words] = prob
+    unimodel, bimodel = load_bigram_model(kovfig.bigram_model_file)
 
     ifd = open(sys.argv[1]) if len(sys.argv) >= 2 else sys.stdin
     for line in (_.rstrip() for _ in ifd):

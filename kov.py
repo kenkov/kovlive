@@ -170,7 +170,6 @@ def _search(
         from pprint import pprint
         pprint(best)
         pprint(before_pos)
-        return best, before_pos
 
     # search best
     ans = []

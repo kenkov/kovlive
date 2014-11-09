@@ -231,7 +231,7 @@ if __name__ == '__main__':
     # parse arg
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "infile",
+        "file",
         nargs="?",
         type=argparse.FileType("r"),
         default=sys.stdin,
@@ -244,11 +244,11 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    for line in (_.rstrip() for _ in args.infile):
+    for line in (_.rstrip() for _ in args.file):
         ans = _search(
             list(line),
             unimodel,
             bimodel,
             phrasemodel,
             verbose=args.verbose)
-        print(''.join(ans[1:-1]))
+        print(''.join(ans))

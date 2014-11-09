@@ -251,4 +251,4 @@ if __name__ == '__main__':
             bimodel,
             phrasemodel,
             verbose=args.verbose)
-        print(''.join(ans[1:-1]))
+        print(''.join(ans))

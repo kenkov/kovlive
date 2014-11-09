@@ -2,7 +2,7 @@
 # coding:utf-8
 
 
-from math import log
+import math
 from chartype import Chartype
 
 
@@ -43,6 +43,7 @@ def bigram_prob(
         lambda1: float=0.95,
         unk_n: int=1e6,
         verbose: bool=False,
+        log: bool=True
 ):
     if verbose:
         vstr = ""
@@ -55,7 +56,10 @@ def bigram_prob(
     if verbose:
         vstr += "BP({} | {}) = {}".format(w1, w0, round(prob, 4))
         print(vstr)
-    return -log(prob)
+    if log:
+        return -math.log(prob)
+    else:
+        return prob
 
 
 def phrase_prob(
@@ -65,6 +69,7 @@ def phrase_prob(
         lambda1: float=0.95,
         unk_n: int=1e6,
         verbose: bool=False,
+        log: bool=True
 ):
     if verbose:
         vstr = ""
@@ -75,7 +80,10 @@ def phrase_prob(
     if verbose:
         vstr += "PP({} | {}) = {}".format(p2, p1, round(prob, 4))
         print(vstr)
-    return -log(prob)
+    if log:
+        return -math.log(prob)
+    else:
+        return prob
 
 
 def _search(
@@ -167,9 +175,36 @@ def _search(
                             best[next_end][next_key] = next_prob
                             before_pos[next_end][next_key] = cur_key
     if verbose:
-        from pprint import pprint
-        pprint(best)
-        pprint(before_pos)
+        for i in range(1, sent_len):
+            print("{}".format(sent[i]))
+            for (key, (start, end)), prob in best[i].items():
+                before = before_pos[i][(key, (start, end))]
+                b_start, b_end = before[1]
+                b_key = before[0]
+                print("\t({}, {}) {} => {}: linked -> ({}, {}) {}".format(
+                    start, end, key, round(prob, 4),
+                    b_start, b_end, b_key
+                ))
+                print("\t\t-log PP({} | {}) = {}".format(
+                    key, sent[i],
+                    round(phrase_prob(
+                        sent[i],  # phrase
+                        key,  # conv phrase
+                        phrasemodel,
+                        verbose=False,
+                        log=False), 4)
+                ))
+                print("\t\t-log BP({} | {}) = {}".format(
+                    key[0],
+                    b_key[-1],
+                    round(bigram_prob(
+                        b_key[-1],
+                        key[0],
+                        unimodel,
+                        bimodel,
+                        verbose=False,
+                        log=False), 4)
+                ))
 
     # search best
     ans = []
@@ -180,7 +215,7 @@ def _search(
     min_key = ""
     for (key, (_, _)), val in best[ind].items():
         if min_val > val:
-            print("{} => {}: {} => {}".format(min_key, key, min_val, val))
+            #print("{} => {}: {} => {}".format(min_key, key, min_val, val))
             min_key = key
             min_val = val
     ans.append(min_key)

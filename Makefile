@@ -22,6 +22,7 @@ convformat:
 
 bigram:
 	./train_bigram <(ggrep -P '^.{3,}$$' ${HALFWIDTHKATAKANA_FILE} | sed -e 's/./& /g' -e 's/ $$//') >${BIGRAM_MODEL}
+	cat ./hiragana_bigram.model >>bigram.model
 
 bigramsource:
 	#./train_bigram <(awk -F"," '{print $$2}' ${FORMATED_KEYWORD_FILE}) >${BIGRAM_MODEL}
@@ -29,6 +30,7 @@ bigramsource:
 
 phrase:
 	${PYTHON} phrase_extract.py ${DELIMITER} ${FORMATED_KEYWORD_FILE} <${FORMATED_KEYWORD_FILE} | sort | uniq -c | awk '{ printf("%s\t%s\n", $$2, $$1) }' | ${PYTHON} phrasemodel.py >${PHRASE_MODEL}
+	cat hiragana_phrase.model >>${PHRASE_MODEL}
 
 test:
 	${NOSETESTS} *.py

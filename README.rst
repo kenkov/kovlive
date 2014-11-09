@@ -6,6 +6,14 @@
 
 .. code-block:: bash
 
+    usage: kov.py [-h] [-v] [infile]
+
+    optional arguments:
+      -h, --help     show this help message and exit
+      -v, --verbose  show probability
+
+.. code-block:: bash
+
     $ echo 今日のお昼はステーキを食べたいっ | python3 kov.py
     今日のお昼はｽﾃｯｷを食べたいっ
 

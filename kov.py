@@ -171,9 +171,8 @@ if __name__ == '__main__':
     import kovfig
     import sys
 
+    # load models
     phrasemodel = load_phrase_model(kovfig.phrase_model_file)
-
-    # load bigrammodel
     unimodel, bimodel = load_bigram_model(kovfig.bigram_model_file)
 
     ifd = open(sys.argv[1]) if len(sys.argv) >= 2 else sys.stdin

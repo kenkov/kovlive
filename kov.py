@@ -44,7 +44,7 @@ def bigram_prob(
         lambda1: float=0.95,
         unk_n: int=1e6,
         log: bool=True
-):
+) -> float:
     if (w0, w1) in bimodel:
         prob = lambda2 * bimodel[(w0, w1)]
     elif w1 in unimodel:
@@ -65,7 +65,7 @@ def phrase_prob(
         lambda1: float=0.95,
         unk_n: int=1e6,
         log: bool=True
-):
+) -> float:
 
     if p1 in phrasemodel and p2 in phrasemodel[p1]:
         prob = lambda1 * phrasemodel[p1][p2]
@@ -87,7 +87,7 @@ def _search(
         end_symbol: str="</s>",
         max_len=100,
         verbose: bool=False,
-):
+) -> [str]:
 
     sent = [start_symbol] + sent_without_symbol + [end_symbol]
     sent_len = len(sent)

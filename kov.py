@@ -219,10 +219,31 @@ def _search(
     return ans
 
 
+def search(
+        sent_without_symbol: [str],
+        unimodel: dict,
+        bimodel: dict,
+        phrasemodel: dict,
+        start_symbol: str="<s>",
+        end_symbol: str="</s>",
+        max_len=100,
+        verbose: bool=False,
+) -> str:
+    ans = _search(
+        list(sent_without_symbol),
+        unimodel,
+        bimodel,
+        phrasemodel,
+        verbose=args.verbose)
+    text = ''.join(ans)
+    return re.sub(r"(^<s>|</s>$)", "", text)
+
+
 if __name__ == '__main__':
 
     import kovfig
     import argparse
+    import re
 
     # load models
     phrasemodel = load_phrase_model(kovfig.phrase_model_file)
@@ -245,10 +266,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     for line in (_.rstrip() for _ in args.file):
-        ans = _search(
-            list(line),
+        conv_line = search(
+            line,
             unimodel,
             bimodel,
             phrasemodel,
             verbose=args.verbose)
-        print(''.join(ans))
+        print(conv_line)

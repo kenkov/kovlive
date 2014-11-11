@@ -29,7 +29,11 @@ bigramsource:
 	#./train_bigram <(sed -e 's/./& /g' -e 's/ $$//' raw.txt) >${BIGRAM_MODEL}
 
 phrase:
-	${PYTHON} phrase_extract.py ${DELIMITER} ${FORMATED_KEYWORD_FILE} <${FORMATED_KEYWORD_FILE} | sort | uniq -c | awk '{ printf("%s\t%s\n", $$2, $$1) }' | ${PYTHON} phrasemodel.py >${PHRASE_MODEL}
+	${PYTHON} phrase_extract.py ${DELIMITER} ${FORMATED_KEYWORD_FILE} <${FORMATED_KEYWORD_FILE} \
+		| sort \
+		| uniq -c \
+		| awk '{ printf("%s\t%s\n", $$2, $$1) }' \
+		| ${PYTHON} phrasemodel.py katakana_phrase.txt >${PHRASE_MODEL}
 	cat hiragana_phrase.model >>${PHRASE_MODEL}
 
 test:

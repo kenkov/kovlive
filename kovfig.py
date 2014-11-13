@@ -5,23 +5,23 @@ from os import path
 
 
 # the number of loop for train IBM Model 2
-loop_count = 10
-phrase_model_file = path.join(
+LOOP_COUNT = 10
+PHRASE_MODEL_FILE = path.join(
     path.abspath(path.dirname(__file__)),
     "phrase.model"
 )
-bigram_model_file = path.join(
+BIGRAM_MODEL_FILE = path.join(
     path.abspath(path.dirname(__file__)),
     "bigram.model"
 )
 
 if __name__ == '__main__':
     print("{} = {}".format(
-        "loop_count",
-        loop_count))
+        "LOOP_COUNT",
+        LOOP_COUNT))
     print("{} = {}".format(
         "phrase_model_file",
-        phrase_model_file))
+        PHRASE_MODEL_FILE))
     print("{} = {}".format(
         "bigram_model_file",
-        bigram_model_file))
+        BIGRAM_MODEL_FILE))

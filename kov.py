@@ -4,6 +4,7 @@
 
 import math
 import sys
+import kovfig
 from chartype import Chartype
 
 

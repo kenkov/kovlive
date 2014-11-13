@@ -23,7 +23,7 @@ def load_phrase_model(modelfile: str) -> dict:
 def load_bigram_model(modelfile: str) -> (dict, dict):
     unimodel = {}
     bimodel = {}
-    with open(kovfig.bigram_model_file) as f:
+    with open(modelfile) as f:
         for line in f:
             words, prob = line.rstrip().split("\t")
             prob = float(prob)
@@ -246,8 +246,8 @@ if __name__ == '__main__':
     import re
 
     # load models
-    phrasemodel = load_phrase_model(kovfig.phrase_model_file)
-    unimodel, bimodel = load_bigram_model(kovfig.bigram_model_file)
+    phrasemodel = load_phrase_model(kovfig.PHRASE_MODEL_FILE)
+    unimodel, bimodel = load_bigram_model(kovfig.BIGRAM_MODEL_FILE)
 
     # parse arg
     parser = argparse.ArgumentParser()

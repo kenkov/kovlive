@@ -623,9 +623,9 @@ if __name__ == '__main__':
     corpus = mkcorpus(sentenses)
 
     # train model from corpus
-    f2e_train = _train_ibmmodel2(corpus, loop_count=kovfig.loop_count)
+    f2e_train = _train_ibmmodel2(corpus, loop_count=kovfig.LOOP_COUNT)
     e2f_corpus = list(zip(*reversed(list(zip(*corpus)))))
-    e2f_train = _train_ibmmodel2(e2f_corpus, loop_count=kovfig.loop_count)
+    e2f_train = _train_ibmmodel2(e2f_corpus, loop_count=kovfig.LOOP_COUNT)
 
     # phrase extraction
     for line in stdin:

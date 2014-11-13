@@ -37,7 +37,7 @@ phrase:
 	cat hiragana_phrase.model >>${PHRASE_MODEL}
 
 test:
-	${NOSETESTS} *.py
+	${NOSETESTS}
 
 clean:
 	rm ${FORMATED_KEYWORD_FILE} ${BIGRAM_MODEL} ${PHRASE_MODEL} train_bigram

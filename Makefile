@@ -14,14 +14,14 @@ PHRASE_MODEL=phrase.model
 
 main: train_bigram convformat bigram phrase
 
-train_bigram: train_bigram.cpp
-	g++ -O2 -Wall -std=c++11 train_bigram.cpp -o train_bigram
+train_bigram: train_bigram.cpp TrainBigram.hs
+	ghc -O2 -Wall TrainBigram.hs -o TrainBigram
 
 convformat:
 	sed -e 's/./& /g' -e 's/ $$//' -e 's/ , /,/g' <${KEYWORD_FILE} >${FORMATED_KEYWORD_FILE}
 
 bigram:
-	./train_bigram <(ggrep -P '^.{3,}$$' ${HALFWIDTHKATAKANA_FILE} | sed -e 's/./& /g' -e 's/ $$//') >${BIGRAM_MODEL}
+	./TrainBigram <(ggrep -P '^.{3,}$$' ${HALFWIDTHKATAKANA_FILE} | sed -e 's/./& /g' -e 's/ $$//') | sort >log
 	cat ./hiragana_bigram.model >>bigram.model
 
 bigramsource:

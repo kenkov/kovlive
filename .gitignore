@@ -5,3 +5,8 @@ phrase.model
 train_bigram
 keyword.input.txt
 raw.txt
+TrainBigram
+TrainBigram.hi
+TrainBigram.o
+doc/
+test.txt

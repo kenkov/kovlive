@@ -15,7 +15,7 @@ PHRASE_MODEL=phrase.model
 
 main: train_bigram convformat bigram phrase
 
-train_bigram: train_bigram.cpp TrainBigram.hs
+train_bigram: TrainBigram.hs
 	ghc -O2 -Wall TrainBigram.hs -o TrainBigram
 
 convformat:
@@ -43,3 +43,4 @@ test:
 
 clean:
 	rm -r ${FORMATED_KEYWORD_FILE} ${BIGRAM_MODEL} ${PHRASE_MODEL} TrainBigram TrainBigram.o TrainBigram.hi
+	if [ -d "__pycache__" ]; then rm -r __pycache__; fi

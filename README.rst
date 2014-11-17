@@ -25,13 +25,13 @@
 使い方
 =======
 
-python3 が必要です。 ``make`` してモデルを作成します。
+python3, GHC 7.8.3 が必要です。 ``make`` してモデルを作成します。
 
 .. code-block:: bash
 
     $ make
 
-テストするには ``nose`` をいれて
+テストするには ``nosetests`` と ``doctest`` をいれて
 
 .. code-block:: bash
 

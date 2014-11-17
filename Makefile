@@ -2,6 +2,7 @@ SHELL=bash
 PYTHON=python3
 DELIMITER=","
 NOSETESTS=nosetests -v --all-modules
+DOCTEST=doctest
 
 KEYWORD_FILE=keyword.txt
 FORMATED_KEYWORD_FILE=keyword.input.txt
@@ -14,15 +15,15 @@ PHRASE_MODEL=phrase.model
 
 main: train_bigram convformat bigram phrase
 
-train_bigram: train_bigram.cpp
-	g++ -O2 -Wall -std=c++11 train_bigram.cpp -o train_bigram
+train_bigram: TrainBigram.hs
+	ghc -O2 -Wall TrainBigram.hs -o TrainBigram
 
 convformat:
 	sed -e 's/./& /g' -e 's/ $$//' -e 's/ , /,/g' <${KEYWORD_FILE} >${FORMATED_KEYWORD_FILE}
 
 bigram:
-	./train_bigram <(ggrep -P '^.{3,}$$' ${HALFWIDTHKATAKANA_FILE} | sed -e 's/./& /g' -e 's/ $$//') >${BIGRAM_MODEL}
-	cat ./hiragana_bigram.model >>bigram.model
+	./TrainBigram <(ggrep -P '^.{3,}$$' ${HALFWIDTHKATAKANA_FILE} | sed -e 's/./& /g' -e 's/ $$//') | sort >${BIGRAM_MODEL}
+	cat ./hiragana_bigram.model >>${BIGRAM_MODEL}
 
 bigramsource:
 	#./train_bigram <(awk -F"," '{print $$2}' ${FORMATED_KEYWORD_FILE}) >${BIGRAM_MODEL}
@@ -37,7 +38,9 @@ phrase:
 	cat hiragana_phrase.model >>${PHRASE_MODEL}
 
 test:
-	${NOSETESTS} *.py
+	${NOSETESTS}
+	${DOCTEST} TrainBigram.hs
 
 clean:
-	rm ${FORMATED_KEYWORD_FILE} ${BIGRAM_MODEL} ${PHRASE_MODEL} train_bigram
+	rm -r ${FORMATED_KEYWORD_FILE} ${BIGRAM_MODEL} ${PHRASE_MODEL} TrainBigram TrainBigram.o TrainBigram.hi
+	if [ -d "__pycache__" ]; then rm -r __pycache__; fi

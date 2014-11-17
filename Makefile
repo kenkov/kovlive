@@ -2,6 +2,7 @@ SHELL=bash
 PYTHON=python3
 DELIMITER=","
 NOSETESTS=nosetests -v --all-modules
+DOCTEST=doctest
 
 KEYWORD_FILE=keyword.txt
 FORMATED_KEYWORD_FILE=keyword.input.txt
@@ -21,8 +22,8 @@ convformat:
 	sed -e 's/./& /g' -e 's/ $$//' -e 's/ , /,/g' <${KEYWORD_FILE} >${FORMATED_KEYWORD_FILE}
 
 bigram:
-	./TrainBigram <(ggrep -P '^.{3,}$$' ${HALFWIDTHKATAKANA_FILE} | sed -e 's/./& /g' -e 's/ $$//') | sort >log
-	cat ./hiragana_bigram.model >>bigram.model
+	./TrainBigram <(ggrep -P '^.{3,}$$' ${HALFWIDTHKATAKANA_FILE} | sed -e 's/./& /g' -e 's/ $$//') | sort >${BIGRAM_MODEL}
+	cat ./hiragana_bigram.model >>${BIGRAM_MODEL}
 
 bigramsource:
 	#./train_bigram <(awk -F"," '{print $$2}' ${FORMATED_KEYWORD_FILE}) >${BIGRAM_MODEL}
@@ -38,6 +39,7 @@ phrase:
 
 test:
 	${NOSETESTS}
+	${DOCTEST} TrainBigram.hs
 
 clean:
-	rm ${FORMATED_KEYWORD_FILE} ${BIGRAM_MODEL} ${PHRASE_MODEL} train_bigram
+	rm -r ${FORMATED_KEYWORD_FILE} ${BIGRAM_MODEL} ${PHRASE_MODEL} TrainBigram TrainBigram.o TrainBigram.hi

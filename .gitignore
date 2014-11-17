@@ -10,3 +10,4 @@ TrainBigram.hi
 TrainBigram.o
 doc/
 test.txt
+train_bigram.cpp

@@ -22,7 +22,7 @@ convformat:
 	sed -e 's/./& /g' -e 's/ $$//' -e 's/ , /,/g' <${KEYWORD_FILE} >${FORMATED_KEYWORD_FILE}
 
 bigram:
-	./TrainBigram <(ggrep -P '^.{3,}$$' ${HALFWIDTHKATAKANA_FILE} | sed -e 's/./& /g' -e 's/ $$//') | sort >${BIGRAM_MODEL}
+	./TrainBigram <(grep -P '^.{3,}$$' ${HALFWIDTHKATAKANA_FILE} | sed -e 's/./& /g' -e 's/ $$//') | sort >${BIGRAM_MODEL}
 	cat ./hiragana_bigram.model >>${BIGRAM_MODEL}
 
 bigramsource:

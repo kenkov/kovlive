@@ -4,28 +4,44 @@
 from os import path
 
 
-def filepath(fp):
+def filepath(*fp):
     '''
     このシクリプトが存在するディレクトリからの
     絶対パスに変換する
     '''
     return path.join(
         path.abspath(path.dirname(__file__)),
-        fp
+        *fp
     )
 
+modeldir = "model"
 
 # the number of loop for train IBM Model 2
 LOOP_COUNT = 10
-PHRASE_MODEL = filepath("phrase.model")
-PHRASE = filepath("phrase.txt")
-BIGRAM = filepath("halfwidthkatakana.txt")
-PHRASE_MOD = filepath("phrase.mod.txt")
-BIGRAM_MODEL = filepath("bigram.model")
-PHRASE_MODEL_MOD = filepath("phrase.mod.model")
-BIGRAM_MODEL_MOD = filepath("bigram.mod.model")
-KEYWORD_FILE = filepath("keyword.txt")
-
+PHRASE_MODEL = filepath(
+    modeldir,
+    "phrase.model")
+PHRASE = filepath(
+    modeldir,
+    "phrase.txt")
+BIGRAM = filepath(
+    modeldir,
+    "halfwidthkatakana.txt")
+PHRASE_MOD = filepath(
+    modeldir,
+    "phrase.mod.txt")
+BIGRAM_MODEL = filepath(
+    modeldir,
+    "bigram.model")
+PHRASE_MODEL_MOD = filepath(
+    modeldir,
+    "phrase.mod.model")
+BIGRAM_MODEL_MOD = filepath(
+    modeldir,
+    "bigram.mod.model")
+KEYWORD_FILE = filepath(
+    modeldir,
+    "keyword.txt")
 
 XTU_REPLACE = {
     "。", "、", "."

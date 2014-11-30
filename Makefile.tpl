@@ -45,7 +45,7 @@ convformat:
 	sed -e 's/./& /g' -e 's/ $$//' -e 's/ , /,/g' <${KEYWORD_FILE} >${PHRASE}
 
 bigram:
-	./TrainBigram <(ggrep -P '^.{3,}$$' ${BIGRAM} | sed -e 's/./& /g' -e 's/ $$//') | sort >${BIGRAM_MODEL}
+	./TrainBigram <(grep -P '^.{3,}$$' ${BIGRAM} | sed -e 's/./& /g' -e 's/ $$//') | sort >${BIGRAM_MODEL}
 	cat ${BIGRAM_MODEL_MOD} >>${BIGRAM_MODEL}
 
 phrase:

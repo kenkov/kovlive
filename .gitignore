@@ -2,12 +2,10 @@ __pycache__/
 *.pyc
 bigram.model
 phrase.model
+phrase.txt
 train_bigram
-keyword.input.txt
-raw.txt
 TrainBigram
 TrainBigram.hi
 TrainBigram.o
-doc/
 test.txt
 train_bigram.cpp

@@ -173,11 +173,12 @@ class KovLang:
                             b_start, b_end, b_key
                             ),
                         file=sys.stderr)
+                    word = ''.join(sent[start:end+1])
                     print(
                         "\t\tPP({} | {}) = {}".format(
-                            key, sent[i],
+                            key, word,
                             round(self.phrase_prob(
-                                sent[i],  # phrase
+                                word,  # phrase
                                 key,  # conv phrase
                                 log=False), 4)
                             ),

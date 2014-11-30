@@ -31,14 +31,14 @@ BIGRAM=halfwidthkatakana.txt
 BIGRAM_MODEL_MOD=bigram.mod.model
 BIGRAM_MODEL=bigram.model
 
-.PHONY: main convformat bigram phrase clean
+.PHONY: main build modmodel convformat bigram phrase test clean
 
-main: train_bigram modmodel convformat bigram phrase
+main: train_bigram modelmod convformat bigram phrase
 
-train_bigram: TrainBigram.hs
+build: TrainBigram.hs
 	ghc -O2 -Wall TrainBigram.hs -o TrainBigram
 
-modmodel:
+modelmod:
 	${PYTHON} make_mod.py
 
 convformat:
@@ -47,10 +47,6 @@ convformat:
 bigram:
 	./TrainBigram <(ggrep -P '^.{3,}$$' ${BIGRAM} | sed -e 's/./& /g' -e 's/ $$//') | sort >${BIGRAM_MODEL}
 	cat ${BIGRAM_MODEL_MOD} >>${BIGRAM_MODEL}
-
-bigramsource:
-	#./train_bigram <(awk -F"," '{print $$2}' ${FORMATED_KEYWORD_FILE}) >${BIGRAM_MODEL}
-	#./train_bigram <(sed -e 's/./& /g' -e 's/ $$//' raw.txt) >${BIGRAM_MODEL}
 
 phrase:
 	${PYTHON} phrase_extract.py ${DELIMITER} ${PHRASE} <${PHRASE} \
@@ -67,7 +63,9 @@ test:
 clean:
 	for file in ${PHRASE} \
 				${BIGRAM_MODEL} \
+				${BIGRAM_MODEL_MOD} \
 				${PHRASE_MODEL} \
+				${PHRASE_MODEL_MOD} \
 				TrainBigram \
 				TrainBigram.o \
 				TrainBigram.hi; do \

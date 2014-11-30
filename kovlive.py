@@ -234,11 +234,24 @@ class KovLang:
 
 def test_search():
     import config
-    s = "かぼちゃステーキかエナジードリンク飲みたい"
-    kl = KovLang(
-        config.PHRASE_MODEL_FILE,
-        config.BIGRAM_MODEL_FILE)
-    assert kl.search(s) == "かぼちゃｽﾃｯｷかｴﾅﾖｰﾄﾞﾘﾝﾎﾟ飲みたいっ"
+
+    def _test(*lst):
+        kl = KovLang(
+            config.PHRASE_MODEL,
+            config.BIGRAM_MODEL)
+        for frm, to in lst:
+            assert kl.search(frm) == to
+
+    _test(
+        ["かぼちゃステーキかエナジードリンク飲みたい",
+         "かぼちゃｽﾃｯｷかｴﾅﾖｰﾄﾞﾘﾝﾎﾟ飲みたいっ"],
+        ["こんなところか",
+         "こんなところかっ"],
+        ["こんなところかっ",
+         "こんなところかっ"],
+        ["こんなところか。",
+         "こんなところかっ"],
+    )
 
 
 def add_symbol(

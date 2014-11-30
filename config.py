@@ -17,11 +17,11 @@ def filepath(fp):
 
 # the number of loop for train IBM Model 2
 LOOP_COUNT = 10
-PHRASE_MODEL_FILE = filepath("phrase.model")
-BIGRAM_MODEL_FILE = filepath("bigram.model")
+PHRASE_MODEL = filepath("phrase.model")
+BIGRAM_MODEL = filepath("bigram.model")
 
-PHRASE_MOD_MODEL_FILE = filepath("phrase.mod.model")
-BIGRAM_MOD_MODEL_FILE = filepath("bigram.mod.model")
+PHRASE_MODEL_MOD = filepath("phrase.mod.model")
+BIGRAM_MODEL_MOD = filepath("bigram.mod.model")
 
 XTU_REPLACE = {
     "。", "、", "."
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         LOOP_COUNT))
     print("{} = {}".format(
         "phrase_model_file",
-        PHRASE_MODEL_FILE))
+        PHRASE_MODEL))
     print("{} = {}".format(
         "bigram_model_file",
-        BIGRAM_MODEL_FILE))
+        BIGRAM_MODEL))

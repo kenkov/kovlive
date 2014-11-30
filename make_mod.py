@@ -4,7 +4,7 @@
 import config
 
 
-def make_mod_model(
+def make_model_mod(
     phrase,
     bigram,
 ):
@@ -42,7 +42,7 @@ def make_mod_model(
 
 
 if __name__ == '__main__':
-    make_mod_model(
-        config.PHRASE_MOD_MODEL_FILE,
-        config.BIGRAM_MOD_MODEL_FILE
+    make_model_mod(
+        config.PHRASE_MODEL_MOD,
+        config.BIGRAM_MODEL_MOD
     )

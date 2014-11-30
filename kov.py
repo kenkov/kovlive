@@ -337,8 +337,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     kl = KovLang(
-        config.PHRASE_MODEL_FILE,
-        config.BIGRAM_MODEL_FILE)
+        config.PHRASE_MODEL,
+        config.BIGRAM_MODEL)
 
     for line in (_.rstrip() for _ in args.file):
         conv_line = kl.search(

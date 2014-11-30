@@ -11,3 +11,4 @@ TrainBigram.o
 doc/
 test.txt
 train_bigram.cpp
+phrase.txt

@@ -33,16 +33,19 @@ BIGRAM_MODEL=bigram.model
 
 .PHONY: main convformat bigram phrase clean
 
-main: train_bigram convformat bigram phrase
+main: train_bigram modmodel convformat bigram phrase
 
 train_bigram: TrainBigram.hs
 	ghc -O2 -Wall TrainBigram.hs -o TrainBigram
+
+modmodel:
+	${PYTHON} make_mod.py
 
 convformat:
 	sed -e 's/./& /g' -e 's/ $$//' -e 's/ , /,/g' <${KEYWORD_FILE} >${PHRASE}
 
 bigram:
-	./TrainBigram <(grep -P '^.{3,}$$' ${BIGRAM} | sed -e 's/./& /g' -e 's/ $$//') | sort >${BIGRAM_MODEL}
+	./TrainBigram <(ggrep -P '^.{3,}$$' ${BIGRAM} | sed -e 's/./& /g' -e 's/ $$//') | sort >${BIGRAM_MODEL}
 	cat ${BIGRAM_MODEL_MOD} >>${BIGRAM_MODEL}
 
 bigramsource:

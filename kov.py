@@ -175,22 +175,22 @@ class KovLang:
                         file=sys.stderr)
                     word = ''.join(sent[start:end+1])
                     print(
-                        "\t\tPP({} | {}) = {}".format(
+                        "\t\t-log PP({} | {}) = {}".format(
                             key, word,
                             round(self.phrase_prob(
                                 word,  # phrase
                                 key,  # conv phrase
-                                log=False), 4)
+                                log=True), 4)
                             ),
                         file=sys.stderr)
                     print(
-                        "\t\tBP({} | {}) = {}".format(
+                        "\t\t-log BP({} | {}) = {}".format(
                             key[0],
                             b_key[-1],
                             round(self.bigram_prob(
                                 b_key[-1],
                                 key[0],
-                                log=False), 4),
+                                log=True), 4),
                             ),
                         file=sys.stderr)
         # search best

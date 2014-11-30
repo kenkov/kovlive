@@ -20,7 +20,7 @@ def make_model_mod(
     # phrase
     for word in config.XTU_REPLACE:
         print("{0},っ\t0.9".format(word), file=phrase_fd)
-        print("{0},{0}\t0.9".format(word), file=phrase_fd)
+        print("{0},{0}\t0.1".format(word), file=phrase_fd)
     for word in config.XTU_ADD:
         print("{0},っ{0}\t0.9".format(word), file=phrase_fd)
         print("{0},{0}\t0.1".format(word), file=phrase_fd)

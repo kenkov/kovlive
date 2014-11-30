@@ -14,11 +14,11 @@ DOCTEST=doctest
 #     からフレーズモデルを生成し、その後で
 #     * PHRASE_MODEL_MOD
 #     をモデルに追加する。
-KEYWORD_FILE=keyword.txt
-PHRASE=phrase.txt
-PHRASE_MOD=phrase.mod.txt
-PHRASE_MODEL_MOD=phrase.mod.model
-PHRASE_MODEL=phrase.model
+KEYWORD_FILE={{ KEYWORD_FILE }}
+PHRASE={{ PHRASE }}
+PHRASE_MOD={{ PHRASE_MOD }}
+PHRASE_MODEL_MOD={{ PHRASE_MODEL_MOD }}
+PHRASE_MODEL={{ PHRASE_MODEL }}
 
 # bigram model
 #     BIGRAM_MODEL という言語モデルを生成する。
@@ -27,13 +27,13 @@ PHRASE_MODEL=phrase.model
 #     HALFWIDTHKATAKANA_FILE から言語モデルを生成し、その後で
 #     * BIGRAM_MOD
 #     を追加する。
-BIGRAM=halfwidthkatakana.txt
-BIGRAM_MODEL_MOD=bigram.mod.model
-BIGRAM_MODEL=bigram.model
+BIGRAM={{ BIGRAM }}
+BIGRAM_MODEL_MOD={{ BIGRAM_MODEL_MOD }}
+BIGRAM_MODEL={{ BIGRAM_MODEL }}
 
 .PHONY: main build modmodel convformat bigram phrase test clean
 
-main: train_bigram modelmod convformat bigram phrase
+main: train_bigram build modelmod convformat bigram phrase
 
 build: TrainBigram.hs
 	ghc -O2 -Wall TrainBigram.hs -o TrainBigram

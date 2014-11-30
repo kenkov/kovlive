@@ -18,10 +18,14 @@ def filepath(fp):
 # the number of loop for train IBM Model 2
 LOOP_COUNT = 10
 PHRASE_MODEL = filepath("phrase.model")
+PHRASE = filepath("phrase.txt")
+BIGRAM = filepath("halfwidthkatakana.txt")
+PHRASE_MOD = filepath("phrase.mod.txt")
 BIGRAM_MODEL = filepath("bigram.model")
-
 PHRASE_MODEL_MOD = filepath("phrase.mod.model")
 BIGRAM_MODEL_MOD = filepath("bigram.mod.model")
+KEYWORD_FILE = filepath("keyword.txt")
+
 
 XTU_REPLACE = {
     "。", "、", "."
@@ -36,12 +40,20 @@ XTU_ADD = {
 
 
 if __name__ == '__main__':
-    print("{} = {}".format(
-        "LOOP_COUNT",
-        LOOP_COUNT))
-    print("{} = {}".format(
-        "phrase_model_file",
-        PHRASE_MODEL))
-    print("{} = {}".format(
-        "bigram_model_file",
-        BIGRAM_MODEL))
+    from jinja2 import Environment, FileSystemLoader
+    env = Environment(
+        loader=FileSystemLoader('.')
+    )
+    template = env.get_template('Makefile.tpl')
+    makefile = template.render(
+        PHRASE=PHRASE,
+        PHRASE_MODEL=PHRASE_MODEL,
+        PHRASE_MODEL_MOD=PHRASE_MODEL_MOD,
+        PHRASE_MOD=PHRASE_MOD,
+        BIGRAM=BIGRAM,
+        BIGRAM_MODEL=BIGRAM_MODEL,
+        BIGRAM_MODEL_MOD=BIGRAM_MODEL_MOD,
+        KEYWORD_FILE=KEYWORD_FILE,
+    )
+    print(makefile, file=open("Makefile", "w"))
+    print("creating Makefile ... done")

@@ -236,8 +236,8 @@ def test_search():
     import config
     s = "かぼちゃステーキかエナジードリンク飲みたい"
     kl = KovLang(
-        config.PHRASE_MODEL_FILE,
-        config.BIGRAM_MODEL_FILE)
+        config.PHRASE_MODEL,
+        config.BIGRAM_MODEL)
     assert kl.search(s) == "かぼちゃｽﾃｯｷかｴﾅﾖｰﾄﾞﾘﾝﾎﾟ飲みたいっ"
 
 

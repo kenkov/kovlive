@@ -9,3 +9,4 @@ TrainBigram.hi
 TrainBigram.o
 test.txt
 train_bigram.cpp
+Makefile

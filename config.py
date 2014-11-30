@@ -56,4 +56,4 @@ if __name__ == '__main__':
         KEYWORD_FILE=KEYWORD_FILE,
     )
     print(makefile, file=open("Makefile", "w"))
-    print("creating Makefile ... done")
+    print("generating Makefile ... done")

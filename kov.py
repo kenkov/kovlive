@@ -233,11 +233,11 @@ class KovLang:
 
 
 def test_search():
-    import kovfig
+    import config
     s = "かぼちゃステーキかエナジードリンク飲みたい"
     kl = KovLang(
-        kovfig.PHRASE_MODEL_FILE,
-        kovfig.BIGRAM_MODEL_FILE)
+        config.PHRASE_MODEL_FILE,
+        config.BIGRAM_MODEL_FILE)
     assert kl.search(s) == "かぼちゃｽﾃｯｷかｴﾅﾖｰﾄﾞﾘﾝﾎﾟ飲みたいっ"
 
 
@@ -317,7 +317,7 @@ def test_add_symbol():
 
 if __name__ == '__main__':
 
-    import kovfig
+    import config
     import argparse
 
     # parse arg
@@ -337,8 +337,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     kl = KovLang(
-        kovfig.PHRASE_MODEL_FILE,
-        kovfig.BIGRAM_MODEL_FILE)
+        config.PHRASE_MODEL_FILE,
+        config.BIGRAM_MODEL_FILE)
 
     for line in (_.rstrip() for _ in args.file):
         conv_line = kl.search(

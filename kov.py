@@ -5,6 +5,7 @@
 import math
 import sys
 import re
+import chartype
 from chartype import Chartype
 
 
@@ -172,23 +173,24 @@ class KovLang:
                             b_start, b_end, b_key
                             ),
                         file=sys.stderr)
+                    word = ''.join(sent[start:end+1])
                     print(
-                        "\t\tPP({} | {}) = {}".format(
-                            key, sent[i],
+                        "\t\t-log PP({} | {}) = {}".format(
+                            key, word,
                             round(self.phrase_prob(
-                                sent[i],  # phrase
+                                word,  # phrase
                                 key,  # conv phrase
-                                log=False), 4)
+                                log=True), 4)
                             ),
                         file=sys.stderr)
                     print(
-                        "\t\tBP({} | {}) = {}".format(
+                        "\t\t-log BP({} | {}) = {}".format(
                             key[0],
                             b_key[-1],
                             round(self.bigram_prob(
                                 b_key[-1],
                                 key[0],
-                                log=False), 4),
+                                log=True), 4),
                             ),
                         file=sys.stderr)
         # search best
@@ -237,6 +239,80 @@ def test_search():
         kovfig.PHRASE_MODEL_FILE,
         kovfig.BIGRAM_MODEL_FILE)
     assert kl.search(s) == "かぼちゃｽﾃｯｷかｴﾅﾖｰﾄﾞﾘﾝﾎﾟ飲みたいっ"
+
+
+def add_symbol(
+        words: [str],
+        conds: ["str -> bool"],
+        symbols: (str, str),
+) -> [str]:
+    flag = False
+    ans = ["<s>"] + list(words) + ["</s>"]
+    for cond, (start_symbol, end_symbol) in zip(conds, symbols):
+        _words = ans
+        ans = []
+        for w in _words:
+            if flag:
+                if not cond(w):
+                    flag = False
+                    ans.append(end_symbol)
+            else:
+                if cond(w):
+                    flag = True
+                    ans.append(start_symbol)
+            ans.append(w)
+    return ans
+
+
+def is_xtu_symbol(
+        w: str
+) -> bool:
+    symbols = [
+        "…", "。", "？", ".", ",",
+    ]
+    return w in symbols
+
+
+def is_katakana(
+    w: str
+) -> bool:
+    ch = Chartype()
+    try:
+        return ch.is_katakana(w)
+    except chartype.CharException:
+        return False
+
+
+def test_add_symbol():
+    s1 = "ドイツのトリはどこにいるのかな"
+    assert add_symbol(s1, [is_katakana], [("<k>", "</k>")]) == \
+        ['<s>',
+         '<k>', 'ド', 'イ', 'ツ', '</k>',
+         'の',
+         '<k>', 'ト', 'リ', '</k>',
+         'は', 'ど', 'こ', 'に', 'い', 'る', 'の', 'か', 'な',
+         '</s>']
+    s2 = "…ドイツのトリとはっ…"
+    assert add_symbol(s2, [is_xtu_symbol], [("<e>", "</e>")]) == \
+        ['<s>',
+         '<e>', '…', '</e>',
+         'ド', 'イ', 'ツ', 'の', 'ト', 'リ', 'と', 'は', 'っ',
+         '<e>', '…', '</e>',
+         '</s>']
+    assert add_symbol(s2,
+                      [is_katakana, is_xtu_symbol],
+                      [("<k>", "</k>"), ("<e>", "</e>")]) == \
+        ['<s>',
+         '<e>', '…', '</e>',
+         '<k>', 'ド', 'イ', 'ツ', '</k>',
+         'の',
+         '<k>', 'ト', 'リ', '</k>',
+         'と', 'は', 'っ',
+         '<e>', '…', '</e>',
+         '</s>']
+    assert add_symbol("",
+                      [is_katakana, is_xtu_symbol],
+                      [("<k>", "</k>"), ("<e>", "</e>")]) == ['<s>', '</s>']
 
 
 if __name__ == '__main__':

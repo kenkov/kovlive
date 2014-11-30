@@ -1,7 +1,9 @@
 __pycache__/
 *.pyc
 bigram.model
+bigram.mod.model
 phrase.model
+phrase.mod.model
 phrase.txt
 train_bigram
 TrainBigram

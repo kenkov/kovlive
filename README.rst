@@ -11,7 +11,7 @@ Python3 が必要です。
 
 .. code-block:: bash
 
-    $ echo 今日のお昼は、ステーキを食べたい。 | python3 kov.py
+    $ echo 今日のお昼は、ステーキを食べたい。 | python3 kovlive.py
     今日のお昼はっｽﾃｯｷを食べたいっ
 
 .. code-block:: bash

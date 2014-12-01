@@ -2,7 +2,6 @@ SHELL=bash
 PYTHON=python3
 DELIMITER=","
 NOSETESTS=nosetests -v --all-modules
-DOCTEST=doctest
 
 # phrase model
 #     PHRASE_MODEL というフレーズモデルを生成する。
@@ -55,7 +54,6 @@ phrase:
 
 test:
 	${NOSETESTS}
-	${DOCTEST} TrainBigram.hs
 
 clean:
 	for file in ${PHRASE} \

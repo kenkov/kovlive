@@ -8,5 +8,6 @@ train_bigram
 TrainBigram
 TrainBigram.hi
 TrainBigram.o
+TrainBigram.hs
 train_bigram.cpp
 Makefile

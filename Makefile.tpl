@@ -2,7 +2,6 @@ SHELL=bash
 PYTHON=python3
 DELIMITER=","
 NOSETESTS=nosetests -v --all-modules
-DOCTEST=doctest
 
 # phrase model
 #     PHRASE_MODEL というフレーズモデルを生成する。
@@ -35,9 +34,6 @@ BIGRAM_MODEL={{ BIGRAM_MODEL }}
 
 main: train_bigram build modelmod convformat bigram phrase
 
-build: TrainBigram.hs
-	ghc -O2 -Wall TrainBigram.hs -o TrainBigram
-
 modelmod:
 	${PYTHON} make_mod.py
 
@@ -45,7 +41,7 @@ convformat:
 	sed -e 's/./& /g' -e 's/ $$//' -e 's/ , /,/g' <${KEYWORD_FILE} >${PHRASE}
 
 bigram:
-	./TrainBigram <(grep -P '^.{3,}$$' ${BIGRAM} | sed -e 's/./& /g' -e 's/ $$//') | sort >${BIGRAM_MODEL}
+	${PYTHON} train_bigram.py <(grep -P '^.{3,}$$' ${BIGRAM} | sed -e 's/./& /g' -e 's/ $$//') | sort >${BIGRAM_MODEL}
 	cat ${BIGRAM_MODEL_MOD} >>${BIGRAM_MODEL}
 
 phrase:
@@ -58,7 +54,6 @@ phrase:
 
 test:
 	${NOSETESTS}
-	${DOCTEST} TrainBigram.hs
 
 clean:
 	for file in ${PHRASE} \

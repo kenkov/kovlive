@@ -5,8 +5,6 @@
 import math
 import sys
 import re
-import chartype
-from chartype import Chartype
 
 
 class KovLang:
@@ -102,7 +100,6 @@ class KovLang:
         best[0][(start_symbol, (0, 0))] = 0
         before_pos = [dict() for _ in range(sent_len)]
 
-        ch = Chartype()
         for curpos in range(sent_len - 1):
             next_start = curpos + 1
             for next_end in range(
@@ -122,10 +119,7 @@ class KovLang:
                             (next_phrase not in self.phrasemodel
                              or next_word not in
                                 self.phrasemodel[next_phrase]):
-                        try:
-                            conv_phrase = ch.full2half(next_phrase)
-                        except:
-                            conv_phrase = next_phrase
+                        conv_phrase = next_phrase
                         conv_w1 = conv_phrase[0]
                         next_key = (conv_phrase, (next_start, next_end))
                         next_prob = prob \
@@ -252,80 +246,6 @@ def test_search():
         ["こんなところか。",
          "こんなところかっ"],
     )
-
-
-def add_symbol(
-        words: [str],
-        conds: ["str -> bool"],
-        symbols: (str, str),
-) -> [str]:
-    flag = False
-    ans = ["<s>"] + list(words) + ["</s>"]
-    for cond, (start_symbol, end_symbol) in zip(conds, symbols):
-        _words = ans
-        ans = []
-        for w in _words:
-            if flag:
-                if not cond(w):
-                    flag = False
-                    ans.append(end_symbol)
-            else:
-                if cond(w):
-                    flag = True
-                    ans.append(start_symbol)
-            ans.append(w)
-    return ans
-
-
-def is_xtu_symbol(
-        w: str
-) -> bool:
-    symbols = [
-        "…", "。", "？", ".", ",",
-    ]
-    return w in symbols
-
-
-def is_katakana(
-    w: str
-) -> bool:
-    ch = Chartype()
-    try:
-        return ch.is_katakana(w)
-    except chartype.CharException:
-        return False
-
-
-def test_add_symbol():
-    s1 = "ドイツのトリはどこにいるのかな"
-    assert add_symbol(s1, [is_katakana], [("<k>", "</k>")]) == \
-        ['<s>',
-         '<k>', 'ド', 'イ', 'ツ', '</k>',
-         'の',
-         '<k>', 'ト', 'リ', '</k>',
-         'は', 'ど', 'こ', 'に', 'い', 'る', 'の', 'か', 'な',
-         '</s>']
-    s2 = "…ドイツのトリとはっ…"
-    assert add_symbol(s2, [is_xtu_symbol], [("<e>", "</e>")]) == \
-        ['<s>',
-         '<e>', '…', '</e>',
-         'ド', 'イ', 'ツ', 'の', 'ト', 'リ', 'と', 'は', 'っ',
-         '<e>', '…', '</e>',
-         '</s>']
-    assert add_symbol(s2,
-                      [is_katakana, is_xtu_symbol],
-                      [("<k>", "</k>"), ("<e>", "</e>")]) == \
-        ['<s>',
-         '<e>', '…', '</e>',
-         '<k>', 'ド', 'イ', 'ツ', '</k>',
-         'の',
-         '<k>', 'ト', 'リ', '</k>',
-         'と', 'は', 'っ',
-         '<e>', '…', '</e>',
-         '</s>']
-    assert add_symbol("",
-                      [is_katakana, is_xtu_symbol],
-                      [("<k>", "</k>"), ("<e>", "</e>")]) == ['<s>', '</s>']
 
 
 if __name__ == '__main__':

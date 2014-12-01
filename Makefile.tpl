@@ -30,9 +30,9 @@ BIGRAM={{ BIGRAM }}
 BIGRAM_MODEL_MOD={{ BIGRAM_MODEL_MOD }}
 BIGRAM_MODEL={{ BIGRAM_MODEL }}
 
-.PHONY: main build modmodel convformat bigram phrase test clean
+.PHONY: main modmodel convformat bigram phrase test clean
 
-main: train_bigram build modelmod convformat bigram phrase
+main: train_bigram modelmod convformat bigram phrase
 
 modelmod:
 	${PYTHON} make_mod.py

@@ -3,10 +3,9 @@ __pycache__/
 model/bigram.mod.model
 model/phrase.mod.model
 model/phrase.txt
-train_bigram
 TrainBigram
 TrainBigram.hi
 TrainBigram.o
 TrainBigram.hs
-train_bigram.cpp
 Makefile
+otherscripts/

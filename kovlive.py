@@ -252,6 +252,12 @@ if __name__ == '__main__':
 
     import config
     import argparse
+    import os
+
+    if not (os.path.isfile(config.PHRASE_MODEL) and
+            os.path.isfile(config.BIGRAM_MODEL)):
+        print("Make first before executing kovlang.py", file=sys.stderr)
+        sys.exit(1)
 
     # parse arg
     parser = argparse.ArgumentParser()

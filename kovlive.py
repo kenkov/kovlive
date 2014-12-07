@@ -156,7 +156,7 @@ class KovLang:
                                 before_pos[next_end][next_key] = cur_key
         if verbose:
             for i in range(1, sent_len):
-                print("{}".format(sent[i]), file=sys.stderr)
+                print("{}".format(sent[i]))
                 for (key, (start, end)), prob in best[i].items():
                     before = before_pos[i][(key, (start, end))]
                     b_start, b_end = before[1]
@@ -165,8 +165,7 @@ class KovLang:
                         "\t({}, {}) {} => {}: linked -> ({}, {}) {}".format(
                             start, end, key, round(prob, 4),
                             b_start, b_end, b_key
-                            ),
-                        file=sys.stderr)
+                            ))
                     word = ''.join(sent[start:end+1])
                     print(
                         "\t\t-log PP({} | {}) = {}".format(
@@ -175,8 +174,7 @@ class KovLang:
                                 word,  # phrase
                                 key,  # conv phrase
                                 log=True), 4)
-                            ),
-                        file=sys.stderr)
+                            ))
                     print(
                         "\t\t-log BP({} | {}) = {}".format(
                             key[0],
@@ -185,8 +183,7 @@ class KovLang:
                                 b_key[-1],
                                 key[0],
                                 log=True), 4),
-                            ),
-                        file=sys.stderr)
+                            ))
         # search best
         ans = []
         ind = sent_len - 1

@@ -20,28 +20,36 @@ modeldir = "model"
 LOOP_COUNT = 10
 PHRASE_MODEL = filepath(
     modeldir,
-    "phrase.model")
+    "phrase.model"
+)
 PHRASE = filepath(
     modeldir,
-    "phrase.txt")
+    "phrase.txt"
+)
 BIGRAM = filepath(
     modeldir,
-    "halfwidthkatakana.txt")
+    "halfwidthkatakana.txt"
+)
 PHRASE_MOD = filepath(
     modeldir,
-    "phrase.mod.txt")
+    "phrase.mod.txt"
+)
 BIGRAM_MODEL = filepath(
     modeldir,
-    "bigram.model")
+    "bigram.model"
+)
 PHRASE_MODEL_MOD = filepath(
     modeldir,
-    "phrase.mod.model")
+    "phrase.mod.model"
+)
 BIGRAM_MODEL_MOD = filepath(
     modeldir,
-    "bigram.mod.model")
+    "bigram.mod.model"
+)
 KEYWORD_FILE = filepath(
     modeldir,
-    "keyword.txt")
+    "keyword.txt"
+)
 
 XTU_REPLACE = {
     "。", "、", "."

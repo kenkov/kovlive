@@ -5,6 +5,7 @@
 import math
 import sys
 import re
+from logging import getLogger
 
 
 class KovLang:
@@ -16,7 +17,8 @@ class KovLang:
     ) -> None:
         self.phrasemodel = self.load_phrase_model(phrase_model_file)
         self.unimodel, self.bimodel = self.load_bigram_model(bigram_model_file)
-        self.logger = logger
+        # set logger
+        self.logger = logger or getLogger(__file__)
 
     def load_phrase_model(
         self,
@@ -230,8 +232,11 @@ class KovLang:
         text = ''.join(ans)
         return re.sub(r"(^<s>|</s>$)", "", text)
 
+    # alias
+    ja2kov = convert
 
-def test_convert():
+
+def test_ja2kov():
     import config
 
     def _test(*lst):
@@ -239,7 +244,7 @@ def test_convert():
             config.PHRASE_MODEL,
             config.BIGRAM_MODEL)
         for frm, to in lst:
-            assert kl.convert(frm) == to
+            assert kl.ja2kov(frm) == to
 
     _test(
         ["かぼちゃステーキかエナジードリンク飲みたい",
@@ -258,7 +263,7 @@ if __name__ == '__main__':
     import config
     import argparse
     import os
-    from logging import getLogger, basicConfig, DEBUG
+    from logging import basicConfig, DEBUG
 
     if not (os.path.isfile(config.PHRASE_MODEL) and
             os.path.isfile(config.BIGRAM_MODEL)):
@@ -281,19 +286,20 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
+    # logger
     logger = getLogger("kovlive")
+    basicConfig(
+        level=DEBUG,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    )
+
+    # kovlang instance
     kl = KovLang(
         config.PHRASE_MODEL,
         config.BIGRAM_MODEL,
         logger
     )
 
-    # log config
-    basicConfig(
-        level=DEBUG,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    )
-
     for line in (_.rstrip() for _ in args.file):
-        conv_line = kl.convert(line, verbose=args.verbose)
+        conv_line = kl.ja2kov(line, verbose=args.verbose)
         print(conv_line)

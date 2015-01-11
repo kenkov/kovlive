@@ -5,19 +5,25 @@
 import math
 import sys
 import re
+from logging import getLogger
 
 
 class KovLang:
     def __init__(
-            self,
-            phrase_model_file: str,
-            bigram_model_file: str) -> None:
+        self,
+        phrase_model_file: str,
+        bigram_model_file: str,
+        logger=None
+    ) -> None:
         self.phrasemodel = self.load_phrase_model(phrase_model_file)
         self.unimodel, self.bimodel = self.load_bigram_model(bigram_model_file)
+        # set logger
+        self.logger = logger or getLogger(__file__)
 
     def load_phrase_model(
-            self,
-            modelfile: str) -> dict:
+        self,
+        modelfile: str
+    ) -> dict:
         phrasemodel = {}
         with open(modelfile) as f:
             for line in f:
@@ -30,8 +36,9 @@ class KovLang:
         return phrasemodel
 
     def load_bigram_model(
-            self,
-            modelfile: str) -> (dict, dict):
+        self,
+        modelfile: str
+    ) -> (dict, dict):
         unimodel = {}
         bimodel = {}
         with open(modelfile) as f:
@@ -46,13 +53,13 @@ class KovLang:
         return unimodel, bimodel
 
     def bigram_prob(
-            self,
-            w0: str,
-            w1: str,
-            lambda2: float=0.95,
-            lambda1: float=0.95,
-            unk_n: int=1e6,
-            log: bool=True
+        self,
+        w0: str,
+        w1: str,
+        lambda2: float=0.95,
+        lambda1: float=0.95,
+        unk_n: int=1e6,
+        log: bool=True
     ) -> float:
         if (w0, w1) in self.bimodel:
             prob = lambda2 * self.bimodel[(w0, w1)]
@@ -67,12 +74,12 @@ class KovLang:
             return prob
 
     def phrase_prob(
-            self,
-            p1: str,
-            p2: str,
-            lambda1: float=0.95,
-            unk_n: int=1e6,
-            log: bool=True
+        self,
+        p1: str,
+        p2: str,
+        lambda1: float=0.95,
+        unk_n: int=1e6,
+        log: bool=True
     ) -> float:
 
         if p1 in self.phrasemodel and p2 in self.phrasemodel[p1]:
@@ -85,13 +92,13 @@ class KovLang:
         else:
             return prob
 
-    def _search(
-            self,
-            sent_without_symbol: [str],
-            start_symbol: str="<s>",
-            end_symbol: str="</s>",
-            max_len=100,
-            verbose: bool=False,
+    def search(
+        self,
+        sent_without_symbol: [str],
+        start_symbol: str="<s>",
+        end_symbol: str="</s>",
+        max_len=100,
+        verbose: bool=False
     ) -> [str]:
 
         sent = [start_symbol] + sent_without_symbol + [end_symbol]
@@ -109,7 +116,7 @@ class KovLang:
                 next_word = sent[next_start]
                 for (cur_phrase, (cur_start, cur_end)), prob in \
                         best[curpos].items():
-                    #cur_word = sent[cur_end]
+                    # cur_word = sent[cur_end]
                     cur_key = (cur_phrase, (cur_start, cur_end))
                     conv_w0 = cur_phrase[-1]
 
@@ -154,20 +161,21 @@ class KovLang:
                             else:
                                 best[next_end][next_key] = next_prob
                                 before_pos[next_end][next_key] = cur_key
+        # verbose output
         if verbose:
             for i in range(1, sent_len):
-                print("{}".format(sent[i]))
+                self.logger.debug("{}".format(sent[i]))
                 for (key, (start, end)), prob in best[i].items():
                     before = before_pos[i][(key, (start, end))]
                     b_start, b_end = before[1]
                     b_key = before[0]
-                    print(
+                    self.logger.debug(
                         "\t({}, {}) {} => {}: linked -> ({}, {}) {}".format(
                             start, end, key, round(prob, 4),
                             b_start, b_end, b_key
                             ))
                     word = ''.join(sent[start:end+1])
-                    print(
+                    self.logger.debug(
                         "\t\t-log PP({} | {}) = {}".format(
                             key, word,
                             round(self.phrase_prob(
@@ -175,7 +183,7 @@ class KovLang:
                                 key,  # conv phrase
                                 log=True), 4)
                             ))
-                    print(
+                    self.logger.debug(
                         "\t\t-log BP({} | {}) = {}".format(
                             key[0],
                             b_key[-1],
@@ -193,7 +201,8 @@ class KovLang:
         min_key = ""
         for (key, (_, _)), val in best[ind].items():
             if min_val > val:
-                #print("{} => {}: {} => {}".format(min_key, key, min_val, val))
+                # print("{} => {}: {} => {}".format(
+                #        min_key, key, min_val, val))
                 min_key = key
                 min_val = val
         ans.append(min_key)
@@ -208,22 +217,26 @@ class KovLang:
 
         return ans
 
-    def search(
-            self,
-            sent_without_symbol: [str],
-            start_symbol: str="<s>",
-            end_symbol: str="</s>",
-            max_len=100,
-            verbose: bool=False,
+    def convert(
+        self,
+        sent_without_symbol: [str],
+        start_symbol: str="<s>",
+        end_symbol: str="</s>",
+        max_len=100,
+        verbose: bool=False
     ) -> str:
-        ans = self._search(
+        ans = self.search(
             list(sent_without_symbol),
-            verbose=verbose)
+            verbose=verbose,
+        )
         text = ''.join(ans)
         return re.sub(r"(^<s>|</s>$)", "", text)
 
+    # alias
+    ja2kov = convert
 
-def test_search():
+
+def test_ja2kov():
     import config
 
     def _test(*lst):
@@ -231,7 +244,7 @@ def test_search():
             config.PHRASE_MODEL,
             config.BIGRAM_MODEL)
         for frm, to in lst:
-            assert kl.search(frm) == to
+            assert kl.ja2kov(frm) == to
 
     _test(
         ["かぼちゃステーキかエナジードリンク飲みたい",
@@ -250,6 +263,7 @@ if __name__ == '__main__':
     import config
     import argparse
     import os
+    from logging import basicConfig, DEBUG
 
     if not (os.path.isfile(config.PHRASE_MODEL) and
             os.path.isfile(config.BIGRAM_MODEL)):
@@ -272,12 +286,20 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
+    # logger
+    logger = getLogger("kovlive")
+    basicConfig(
+        level=DEBUG,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    )
+
+    # kovlang instance
     kl = KovLang(
         config.PHRASE_MODEL,
-        config.BIGRAM_MODEL)
+        config.BIGRAM_MODEL,
+        logger
+    )
 
     for line in (_.rstrip() for _ in args.file):
-        conv_line = kl.search(
-            line,
-            verbose=args.verbose)
+        conv_line = kl.ja2kov(line, verbose=args.verbose)
         print(conv_line)

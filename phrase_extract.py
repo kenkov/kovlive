@@ -49,7 +49,6 @@ def _train_ibmmodel1(corpus, loop_count=10):
 
     def _constant_factory(value):
         '''define a local function for uniform probability initialization'''
-        #return itertools.repeat(value).next
         return lambda: value
 
     f_keys = set()
@@ -74,12 +73,8 @@ def _train_ibmmodel1(corpus, loop_count=10):
                 for f in fs:
                     count[(e, f)] += t[(e, f)] / s_total[e]
                     total[f] += t[(e, f)] / s_total[e]
-                    #if e == u"に" and f == u"always":
-                    #    print(" BREAK:", i, count[(e, f)])
         # estimate probability
         for (e, f) in count.keys():
-            #if count[(e, f)] == 0:
-            #    print(e, f, count[(e, f)])
             t[(e, f)] = count[(e, f)] / total[f]
 
     return t
@@ -152,25 +147,16 @@ def _train_ibmmodel2(corpus, loop_count=10):
         for (i, j, l_e, l_f) in count_a.keys():
             a[(i, j, l_e, l_f)] = count_a[(i, j, l_e, l_f)] / \
                 total_a[(j, l_e, l_f)]
-    # output
-    #for (e, f), val in t.items():
-    #    print("{} {}\t{}".format(e, f, float(val)))
-    #for (i, j, l_e, l_f), val in a.items():
-    #    print("{} {} {} {}\t{}".format(i, j, l_e, l_f, float(val)))
 
     return (t, a)
 
 
 def train_ibmmodel1(sentences, loop_count=10):
-    #for i, j in sentences:
-    #    print(i, j)
     corpus = mkcorpus(sentences)
     return _train_ibmmodel1(corpus, loop_count)
 
 
 def train_ibmmodel2(sentences, loop_count=10):
-    #for i, j in sentences:
-    #    print(i, j)
     corpus = mkcorpus(sentences)
     return _train_ibmmodel2(corpus, loop_count)
 
@@ -255,9 +241,9 @@ def _alignment(elist, flist, e2f, f2e):
                             if (e_new, f_new) in e2f.union(f2e):
                                 alignment.add((e_new, f_new))
                         else:
-                            if ((e_new not in list(zip(*alignment))[0]
-                                    or f_new not in list(zip(*alignment))[1])
-                                    and (e_new, f_new) in e2f.union(f2e)):
+                            if ((e_new not in list(zip(*alignment))[0] or
+                                 f_new not in list(zip(*alignment))[1]) and
+                                    (e_new, f_new) in e2f.union(f2e)):
                                 alignment.add((e_new, f_new))
         if set_len == len(alignment):
             break
@@ -269,9 +255,9 @@ def _alignment(elist, flist, e2f, f2e):
                 if (e_word, f_word) in e2f.union(f2e):
                     alignment.add((e_word, f_word))
             else:
-                if ((e_word not in list(zip(*alignment))[0]
-                        or f_word not in list(zip(*alignment))[1])
-                        and (e_word, f_word) in e2f.union(f2e)):
+                if ((e_word not in list(zip(*alignment))[0] or
+                     f_word not in list(zip(*alignment))[1]) and
+                        (e_word, f_word) in e2f.union(f2e)):
                     alignment.add((e_word, f_word))
     return alignment
 
@@ -362,7 +348,6 @@ def test_train_ibmmodel1_loop1():
                   ("the book", "das Buch"),
                   ("a book", "ein Buch"),
                   ]
-    #t0 = train(sent_pairs, loop_count=0)
     t1 = train_ibmmodel1(sent_pairs, loop_count=1)
 
     loop1 = [(('house', 'Haus'), D("0.5")),
@@ -378,7 +363,6 @@ def test_train_ibmmodel1_loop1():
     # assertion
     # next assertion doesn't make sence because
     # initialized by defaultdict
-    #self.assertEqual(self._format(t0.items()), self._format(loop0))
     assert set(t1.items()) == set(loop1)
 
 
@@ -387,7 +371,6 @@ def test_train_ibmmodel1_loop2():
                   ("the book", "das Buch"),
                   ("a book", "ein Buch"),
                   ]
-    #t0 = train(sent_pairs, loop_count=0)
     t2 = train_ibmmodel1(sent_pairs, loop_count=2)
 
     loop2 = [(('house', 'Haus'), D("0.5713")),
@@ -403,7 +386,6 @@ def test_train_ibmmodel1_loop2():
     # assertion
     # next assertion doesn't make sence because
     # initialized by defaultdict
-    #self.assertEqual(self._format(t0.items()), self._format(loop0))
     assert set(t2.items()) == set(loop2)
 
 
@@ -641,8 +623,8 @@ if __name__ == '__main__':
         align = alignment(es, fs, e2f, f2e)  # symmetrized alignment
 
         # output matrix
-        #from smt.utils.utility import matrix
-        #print(matrix(len(es), len(fs), align, es, fs))
+        # from smt.utils.utility import matrix
+        # print(matrix(len(es), len(fs), align, es, fs))
 
         ext = phrase_extract(es, fs, align)
         for e, f in ext:

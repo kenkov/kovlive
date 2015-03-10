@@ -142,9 +142,12 @@ def _train_ibmmodel2(corpus, loop_count=10):
             try:
                 t[(e, f)] = count[(e, f)] / total[f]
             except decimal.DivisionByZero:
-                print(u"e: {e}, f: {f}, count[(e, f)]: {ef}, total[f]: \
-                      {totalf}".format(e=e, f=f, ef=count[(e, f)],
-                                       totalf=total[f]))
+                print(
+                    ("e: {e}, f: {f}, count[(e, f)]:"
+                     "{ef}, total[f]: {totalf}").format(
+                        e=e, f=f, ef=count[(e, f)], totalf=total[f]
+                     )
+                )
                 raise
         for (i, j, l_e, l_f) in count_a.keys():
             a[(i, j, l_e, l_f)] = count_a[(i, j, l_e, l_f)] / \

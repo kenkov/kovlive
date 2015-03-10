@@ -27,20 +27,6 @@ Python3 が必要です。
         -v, --verbose  show probability
 
 
-モデルのつくりかた
-=====================
-
-モデルの作成には ``jinja2`` とその依存の ``markupsafe`` が必要ですので、
-あらかじめインストールしてください。
-
-.. code-block:: bash
-
-    $ pip install jinja2 markupsafe
-
-次に ``Makefile`` を生成して ``make`` します。
-
-.. code-block:: bash
-
-    $ # Makefile を生成する
-    $ python config.py
-    $ make
+より詳しい解説は
+http://blog.kenkov.jp/pages/software/kovlive.html
+をみてください。

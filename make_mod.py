@@ -29,14 +29,21 @@ def make_model_mod(
 
     # bigram
     print("っ っ\t1e-10", file=bigram_fd)
-    print("ｯ っ\t1e-10", file=bigram_fd)
     print("っ ｯ\t1e-10", file=bigram_fd)
+    print("っ *\t1e-3", file=bigram_fd)
+
+    print("ｯ っ\t1e-10", file=bigram_fd)
     print("ｯ ｯ\t1e-10", file=bigram_fd)
+    print("ｯ *\t1e-3", file=bigram_fd)
+
     for word in config.XTU_REPLACE:
         print("{0} っ\t1e-10".format(word), file=bigram_fd)
-        print("っ {0}\t1e-10".format(word), file=bigram_fd)
+        print("{0} *\t1e-3".format(word), file=bigram_fd)
+        # print("っ {0}\t1e-10".format(word), file=bigram_fd)
+
     for word in config.XTU_ADD:
         print("{0} っ\t1e-10".format(word), file=bigram_fd)
+        print("{0} *\t1e-3".format(word), file=bigram_fd)
 
     print("make mod.model file: {}".format(bigram))
 

@@ -61,12 +61,14 @@ class KovLang:
         unk_n: int=1e6,
         log: bool=True
     ) -> float:
+        prob = (1 - lambda2) * (1 - lambda1) * (1 / unk_n)
         if (w0, w1) in self.bimodel:
-            prob = lambda2 * self.bimodel[(w0, w1)]
-        elif w1 in self.unimodel:
-            prob = (1 - lambda2) * lambda1 * self.unimodel[w1]
-        else:
-            prob = (1 - lambda2) * (1 - lambda1) * (1 / unk_n)
+            prob += lambda2 * self.bimodel[(w0, w1)]
+        elif (w0, "*") in self.bimodel:
+            prob += lambda2 * self.bimodel[(w0, "*")]
+
+        if w1 in self.unimodel:
+            prob += (1 - lambda2) * lambda1 * self.unimodel[w1]
 
         if log:
             return -math.log(prob)
@@ -82,10 +84,9 @@ class KovLang:
         log: bool=True
     ) -> float:
 
+        prob = (1 - lambda1) * (1 / unk_n)
         if p1 in self.phrasemodel and p2 in self.phrasemodel[p1]:
-            prob = lambda1 * self.phrasemodel[p1][p2]
-        else:
-            prob = (1 - lambda1) * (1 / unk_n)
+            prob += lambda1 * self.phrasemodel[p1][p2]
 
         if log:
             return -math.log(prob)

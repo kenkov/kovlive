@@ -53,6 +53,7 @@ KEYWORD_FILE = filepath(
 
 XTU_REPLACE = {
     "。", "、", ".", "．",
+    "，",
 }
 
 XTU_ADD = {
